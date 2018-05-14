@@ -1,7 +1,7 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import {  } from 'ngx-masonry-gallery-lib';
+import { BrowserModule } from '@angular/platform-browser';
 
+import { MasonryGalleryModule } from '../../projects/ngx-masonry-gallery-lib/src/public_api';
 import { AppComponent } from './app.component';
 
 @NgModule({
@@ -9,7 +9,8 @@ import { AppComponent } from './app.component';
     AppComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    MasonryGalleryModule
   ],
   providers: [],
   bootstrap: [AppComponent]
