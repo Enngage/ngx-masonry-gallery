@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, Output, Renderer2 } from '@angular/core';
 import * as masonry from 'masonry-layout';
 
-import { MasonryGalleryImage } from './masonry-gallery-models';
+import { IMasonryGalleryImage } from './masonry-gallery-models';
 import { utilities } from './utilities';
 
 @Component({
@@ -11,12 +11,12 @@ import { utilities } from './utilities';
 })
 export class MasonryGalleryComponent implements AfterViewInit, OnDestroy, OnChanges {
 
-    @Input() images: MasonryGalleryImage[] = [];
-    @Input() columnWidth: number = 330;
+    @Input() images: IMasonryGalleryImage[] = [];
+    @Input() width: number = 330;
     @Input() gutter: number = 5;
     @Input() imageClasses: string[] = [];
 
-    @Output() clickImage = new EventEmitter<MasonryGalleryImage>();
+    @Output() clickImage = new EventEmitter<IMasonryGalleryImage>();
 
     /**
      * Unique gallery guid used for distinguishing between multiple galleries on page
@@ -29,6 +29,7 @@ export class MasonryGalleryComponent implements AfterViewInit, OnDestroy, OnChan
     private grid?: any;
 
     private viewReady: boolean = false;
+    private masonryInitialized: boolean = false;
 
     constructor(
         private renderer: Renderer2
@@ -36,7 +37,7 @@ export class MasonryGalleryComponent implements AfterViewInit, OnDestroy, OnChan
     }
 
     ngOnChanges(): void {
-        if (this.viewReady) {
+        if (this.viewReady && !this.masonryInitialized) {
             this.initMasonry();
         }
     }
@@ -47,7 +48,7 @@ export class MasonryGalleryComponent implements AfterViewInit, OnDestroy, OnChan
         }
     }
 
-    handleClick(image: MasonryGalleryImage): void {
+    handleClick(image: IMasonryGalleryImage): void {
         this.clickImage.next(image);
     }
 
@@ -57,7 +58,12 @@ export class MasonryGalleryComponent implements AfterViewInit, OnDestroy, OnChan
     }
 
     private initMasonry(): void {
+        this.masonryInitialized = true;
+
         this.grid = document.getElementById(this.galleryGuid);
+
+        // remove all existing data from grid
+        this.grid.innerHTML = '';
 
         if (!this.grid) {
             throw Error(`Could not init mansory due to non existing elem with id '${this.galleryGuid}'`);
@@ -66,7 +72,7 @@ export class MasonryGalleryComponent implements AfterViewInit, OnDestroy, OnChan
         this.msnry = new masonry(this.grid, {
             // options...
             itemSelector: '.' + this.mansonryItemSelectorClass,
-            columnWidth: this.columnWidth,
+            columnWidth: this.width,
             gutter: this.gutter,
         });
 
@@ -83,7 +89,7 @@ export class MasonryGalleryComponent implements AfterViewInit, OnDestroy, OnChan
             imageElem.setAttribute('alt', image.alt ? image.alt : 'no description');
             imageElem.setAttribute('src', image.imageUrl);
             // note - images are hidden by default and should be shown only after they are loaded
-            imageElem.setAttribute('style', `max-width: ${this.columnWidth}px; margin-bottom: ${this.gutter}px`);
+            imageElem.setAttribute('style', `max-width: ${this.width}px; margin-bottom: ${this.gutter}px`);
             imageElem.className = imageclass;
             imageElem.addEventListener('load', () => {
                 this.handleImageLoad(imageId);
