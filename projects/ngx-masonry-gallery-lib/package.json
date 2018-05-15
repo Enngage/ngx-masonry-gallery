@@ -1,5 +1,5 @@
 {
-  "name": "ngx-masonry-gallery-lib",
+  "name": "ngx-masonry-gallery",
   "version": "0.0.1",
   "repository": {
     "type": "git",
@@ -16,7 +16,10 @@
     "Angular images"
   ],
   "private": false,
-  "scripts": {},
+  "scripts": {
+    "build:lib": "ng build ngx-masonry-gallery-lib",
+    "prepublishOnly": "npm run build:lib"
+  },
   "peerDependencies": {
     "@angular/common": "^6.0.0",
     "@angular/core": "^6.0.0"

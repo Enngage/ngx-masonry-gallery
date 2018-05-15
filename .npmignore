@@ -1,0 +1,13 @@
+# Ignore everything
+*
+
+# But descend into directories
+!*/
+
+# Recursively allow files under subtree
+!/dist/**
+!package.json
+!.npmignore
+!*.md
+
+

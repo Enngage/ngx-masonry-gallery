@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/ngx-masonry-gallery",
+            "outputPath": "dist-demo",
             "index": "demo/index.html",
             "main": "demo/main.ts",
             "polyfills": "demo/polyfills.ts",
@@ -33,6 +33,7 @@
                   "with": "demo/environments/environment.prod.ts"
                 }
               ],
+              "baseHref": "https://enngage.github.io/ngx-masonry-gallery/",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,

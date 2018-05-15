@@ -1,12 +1,12 @@
 {
-  "name": "ngx-masonry-gallery",
+  "name": "ngx-masonry-gallery-source",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "build:demo": "ng build",
     "serve:demo": "ng serve",
-    "build:lib": "ng build ngx-masonry-gallery-lib",
-    "build-demo-gh-pages": "ng build --prod --base-href \"https://enngage.github.io/ngx-masonry-gallery/\"",
-    "publish-demo-gh-pages": "ngh"
+    "build-demo-gh-pages": "ng build --prod",
+    "publish-demo-gh-pages": "ngh --dir dist-demo"
   },
   "private": true,
   "dependencies": {
