@@ -19,6 +19,7 @@
             "polyfills": "demo/polyfills.ts",
             "tsConfig": "demo/tsconfig.app.json",
             "assets": [
+              "demo/assets/images-compressed"
             ],
             "styles": [
               "demo/styles.css"

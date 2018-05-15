@@ -180,7 +180,7 @@ export class MasonryGalleryComponent
 
         if (!imageIdResult) {
             // image was not found, this is probably an error
-            console.warn(`Image with url '${image.imageUrl}' was not found locally. This is probably an error within gallery and not your fault.`)
+            console.warn(`Image with url '${image.imageUrl}' was not found. If you are adding images, make sure to 'replace' the images array with a new one so that detection change can be executed instead of just adding an image to array (which doesn't fire change detection on array property)`)
             return;
         }
 
