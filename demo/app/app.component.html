@@ -3,3 +3,95 @@
 <div>
     <ngx-masonry-gallery [width]="250" [images]="images"></ngx-masonry-gallery>
 </div>
+
+<h2>
+    Installation
+</h2>
+
+<div>
+    <pre class="html mt-2">
+        <code [innerText]="installation"></code>
+    </pre>
+</div>
+
+<h2>
+    Module inicialization
+</h2>
+
+<div>
+    <pre class="mt-2">
+        <code [innerText]="moduleRegistration"></code>
+    </pre>
+</div>
+
+<h2>
+    Usage
+</h2>
+
+<div>
+    <pre class="html mt-2">
+        <code [innerText]="usage"></code>
+    </pre>
+</div>
+
+<h2>
+    Configuration
+</h2>
+
+<div class="mt-2">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Property</th>
+                <th scope="col">Type</th>
+                <th scope="col">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>width</td>
+                <td>number</td>
+                <td>Width of the column in pixels</td>
+            </tr>
+            <tr>
+                <td>gutter</td>
+                <td>number</td>
+                <td>Size of gutter between columns in pixels</td>
+            </tr>
+            <tr>
+                <td>verticalGutter</td>
+                <td>number</td>
+                <td>Size of the gutter between particular items in pixels. Can be combined with gutter to create all around gutter.</td>
+            </tr>
+            <tr>
+                <td>imageClasses</td>
+                <td>string[]</td>
+                <td>Array of classes added to images for custom styling</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<h2>
+        Events
+    </h2>
+    
+    <div class="mt-2">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Event</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>clickImage</td>
+                    <td>Output</td>
+                    <td>Executes when an image is clicked. <strong>IMasonryGalleryImage</strong> is passed to event.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
