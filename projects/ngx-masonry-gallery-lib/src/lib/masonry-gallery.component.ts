@@ -14,6 +14,7 @@ export class MasonryGalleryComponent implements AfterViewInit, OnDestroy, OnChan
     @Input() images: IMasonryGalleryImage[] = [];
     @Input() width: number = 330;
     @Input() gutter: number = 5;
+    @Input() verticalGutter: number = 5
     @Input() imageClasses: string[] = [];
 
     @Output() clickImage = new EventEmitter<IMasonryGalleryImage>();
@@ -89,7 +90,7 @@ export class MasonryGalleryComponent implements AfterViewInit, OnDestroy, OnChan
             imageElem.setAttribute('alt', image.alt ? image.alt : 'no description');
             imageElem.setAttribute('src', image.imageUrl);
             // note - images are hidden by default and should be shown only after they are loaded
-            imageElem.setAttribute('style', `max-width: ${this.width}px; margin-bottom: ${this.gutter}px`);
+            imageElem.setAttribute('style', `max-width: ${this.width}px; margin-bottom: ${this.verticalGutter}px`);
             imageElem.className = imageclass;
             imageElem.addEventListener('load', () => {
                 this.handleImageLoad(imageId);
