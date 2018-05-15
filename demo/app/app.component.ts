@@ -12,7 +12,7 @@ export class AppComponent implements AfterViewInit {
 
   private readonly numberOfInitiallyShownImages = 8;
   private readonly numberOfImages: number = 23;
-  private readonly imagePath: string = '/assets/images-compressed/';
+  private readonly imagePath: string = 'assets/images-compressed/';
   private readonly imageExt: string = 'jpg';
 
   public readonly installation: string = `npm install ngx-masonry-gallery --save`;
