@@ -12,7 +12,7 @@ declare var hljs: any;
 export class AppComponent implements AfterViewInit {
   private readonly numberOfInitiallyShownImages = 8;
   private readonly numberOfImages: number = 23;
-  private readonly multipleImagesCount: number = 3;
+  public readonly multipleImagesCount: number = 3;
   private readonly imagePath: string = 'assets/images-compressed/';
   private readonly imageExt: string = 'jpg';
 
