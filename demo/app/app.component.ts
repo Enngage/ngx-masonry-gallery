@@ -1,5 +1,6 @@
 import { Component, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { IMasonryGalleryImage } from 'projects/ngx-masonry-gallery-lib/src/lib';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 declare var hljs: any;
 
@@ -95,21 +96,23 @@ export class AppComponent {
     }
 
     const image = this.pool[Math.floor(Math.random() * this.pool.length)];
-    this.images.push(image);
 
-    // assign images so that detection change is fired
-    this.images = this.images;
+    if (image) {
+      this.images.push(image);
 
-    // remove image from pool
-    this.pool = this.pool.filter(m => m.imageUrl.toLowerCase() !== image.imageUrl.toLowerCase());
+      // remove image from pool
+      this.pool = this.pool.filter(m => m.imageUrl.toLowerCase() !== image.imageUrl.toLowerCase());
+    }
   }
 
   removeRandomImage(): void {
     const image = this.images[Math.floor(Math.random() * this.images.length)];
-    this.images = this.images.filter(m => m.imageUrl.toLowerCase() !== image.imageUrl.toLowerCase());
 
-    // add image back to pool
-    this.pool.push(image);
+    if (image) {
+      this.images = this.images.filter(m => m.imageUrl.toLowerCase() !== image.imageUrl.toLowerCase());
+      // add image back to pool
+      this.pool.push(image);
+    }
   }
 
   private prettify(): void {
