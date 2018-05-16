@@ -7,13 +7,13 @@ import {
     OnDestroy,
     Output,
     Renderer2,
-    SimpleChanges
-} from "@angular/core";
-import * as imagesloaded from "imagesloaded";
-import * as masonry from "masonry-layout";
+    SimpleChanges,
+} from '@angular/core';
+import * as imagesLoadedMethod from 'imagesloaded';
+import * as masonry from 'masonry-layout';
 
-import { IMasonryGalleryImage } from "./masonry-gallery-models";
-import { utilities } from "./utilities";
+import { IMasonryGalleryImage } from './masonry-gallery-models';
+import { utilities } from './utilities';
 
 @Component({
     selector: "ngx-masonry-gallery",
@@ -36,12 +36,11 @@ export class MasonryGalleryComponent
      */
     public readonly galleryGuid: string = utilities.newGuid();
     private readonly mansonryItemSelectorClass = `grid-item-${this.galleryGuid}`;
-    private idWithImages: IdWithImage[] = [];
+    private activeImages: ActiveImage[] = [];
 
     private msnry?: any;
     private grid?: any;
     private changesToProcess?: SimpleChanges;
-
     private viewReady: boolean = false;
 
     constructor(private renderer: Renderer2) { }
@@ -110,7 +109,6 @@ export class MasonryGalleryComponent
         } {
         let addedImages: IMasonryGalleryImage[] = [];
         let removedImages: IMasonryGalleryImage[] = [];
-
 
         const newImagesValue = changes.images
             .currentValue as IMasonryGalleryImage[];
@@ -190,7 +188,7 @@ export class MasonryGalleryComponent
 
     private removeImageFromGallery(image: IMasonryGalleryImage): void {
         // get image guid
-        const imageIdResult = this.idWithImages.find(
+        const imageIdResult = this.activeImages.find(
             m => m.image.imageUrl.toLowerCase() === image.imageUrl.toLowerCase()
         );
 
@@ -224,10 +222,13 @@ export class MasonryGalleryComponent
         this.msnry.layout();
 
         // remove image from array
-        for (let i = 0; i < this.idWithImages.length; i++) {
-            const idWithImage = this.idWithImages[i];
-            if (idWithImage.image.imageUrl.toLowerCase() === imageIdResult.image.imageUrl.toLowerCase()) {
-                this.idWithImages.splice(i, 1);
+        for (let i = 0; i < this.activeImages.length; i++) {
+            const idWithImage = this.activeImages[i];
+            if (
+                idWithImage.image.imageUrl.toLowerCase() ===
+                imageIdResult.image.imageUrl.toLowerCase()
+            ) {
+                this.activeImages.splice(i, 1);
             }
         }
     }
@@ -263,7 +264,7 @@ export class MasonryGalleryComponent
             });
 
             // store guid with this image
-            this.idWithImages.push({
+            this.activeImages.push({
                 id: imageId,
                 image: image
             });
@@ -276,24 +277,19 @@ export class MasonryGalleryComponent
         this.grid.appendChild(imagesWrapper);
 
         // wait until all images in wrapped are loaded
-        imagesloaded(imagesWrapper, imagesLoadedResult => {
+        imagesLoadedMethod(imagesWrapper, imagesLoadedResult => {
             if (imagesLoadedResult.images && imagesLoadedResult.images.length > 0) {
                 imagesLoadedResult.images.forEach(loadedImage => {
                     // unhide image
                     loadedImage.img.style.display = null;
-                });
-
-                if (imagesLoadedResult.images.length === 1) {
-                    // if layout is empty, use appended so that transition is nice
-                    this.msnry.appended(imagesLoadedResult.images[0].img);
-                } else {
                     // using 'appended' will cause image to not transition correctly in Angular production build
-                    // when 'optimization' flag is enabled && when there are already some images loaded
+                    // when 'optimization' flag is enabled && when there are already some images loaded. Reload items is
+                    // also required
                     this.msnry.reloadItems();
                     this.msnry.layout();
-                }
+                });
             }
-        });
+        })
     }
 
     private getImageClass(): string {
@@ -313,7 +309,7 @@ export class MasonryGalleryComponent
     }
 }
 
-interface IdWithImage {
+interface ActiveImage {
     id: string;
     image: IMasonryGalleryImage;
 }
