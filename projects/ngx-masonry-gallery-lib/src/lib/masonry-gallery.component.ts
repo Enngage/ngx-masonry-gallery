@@ -5,23 +5,20 @@ import {
     Input,
     OnChanges,
     OnDestroy,
-    OnInit,
     Output,
     Renderer2,
     SimpleChanges
-} from '@angular/core';
-import * as masonry from 'masonry-layout';
+} from "@angular/core";
+import * as imagesLoaded from "imagesloaded";
+import * as masonry from "masonry-layout";
 
-import { IMasonryGalleryImage } from './masonry-gallery-models';
-import { utilities } from './utilities';
+import { IMasonryGalleryImage } from "./masonry-gallery-models";
+import { utilities } from "./utilities";
 
 @Component({
-    selector: 'ngx-masonry-gallery',
-    template: '<div [id]="galleryGuid"></div>',
+    selector: "ngx-masonry-gallery",
+    template: '<div [id]="galleryGuid"></div>'
 })
-/*
-IMPORTANT: Angular's 'optimization' build enabled causes animation to render incorrectly! This seems like a bug in Angular CLI
-*/
 export class MasonryGalleryComponent
     implements AfterViewInit, OnDestroy, OnChanges {
     @Input() images: IMasonryGalleryImage[] = [];
@@ -31,28 +28,32 @@ export class MasonryGalleryComponent
     @Input() imageClasses: string[] = [];
 
     @Output() clickImage = new EventEmitter<IMasonryGalleryImage>();
+    @Output() removeComplete = new EventEmitter<any[]>();
+    @Output() layoutComplete = new EventEmitter<any[]>();
 
     /**
      * Unique gallery guid used for distinguishing between multiple galleries on page
      */
     public readonly galleryGuid: string = utilities.newGuid();
-    private readonly mansonryItemSelectorClass = 'grid-item';
+    private readonly mansonryItemSelectorClass = `grid-item-${this.galleryGuid}`;
     private idWithImages: IdWithImage[] = [];
 
     private msnry?: any;
     private grid?: any;
+    private changesToProcess?: SimpleChanges;
 
     private viewReady: boolean = false;
-    private processImagesAfterViewIsReady: boolean = false;
 
     constructor(private renderer: Renderer2) { }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (this.viewReady) {
-            this.processImages(changes);
-        } else {
-            // process images once we can
-            this.processImagesAfterViewIsReady = true;
+        if (changes.images && changes.images.currentValue) {
+            if (!this.viewReady) {
+                // process images once we can
+                this.changesToProcess = changes;
+            } else {
+                this.processImages(changes);
+            }
         }
     }
 
@@ -71,28 +72,38 @@ export class MasonryGalleryComponent
         this.initMasonry();
 
         // process images now
-        if (this.processImagesAfterViewIsReady) {
-            this.processImages();
-            this.processImagesAfterViewIsReady = false;
+        if (this.changesToProcess) {
+            this.processImages(this.changesToProcess);
+            this.changesToProcess = undefined;
         }
     }
 
-    private processImages(changes?: SimpleChanges): void {
+    addImages(images: IMasonryGalleryImage[]): void {
+        if (images && images.length > 0) {
+            this.addImagesToGallery(images);
+        }
+    }
+
+    removeImages(images: IMasonryGalleryImage[]): void {
+        if (images && images.length > 0) {
+            images.forEach(image => {
+                this.removeImageFromGallery(image);
+            });
+        }
+    }
+
+    private processImages(changes: SimpleChanges): void {
         const imagesToProcess = this.getAddedAndRemovesImages(changes);
 
         // add images to mansonry layout
-        imagesToProcess.addedImages.forEach(image => {
-            this.addImageToGallery(image, this.grid);
-        });
+        this.addImages(imagesToProcess.addedImages);
 
         // removes images from layout
-        imagesToProcess.removedImages.forEach(image => {
-            this.removeImageFromGallery(image, this.grid);
-        });
+        this.removeImages(imagesToProcess.removedImages);
     }
 
     private getAddedAndRemovesImages(
-        changes: SimpleChanges | undefined
+        changes: SimpleChanges
     ): {
             addedImages: IMasonryGalleryImage[];
             removedImages: IMasonryGalleryImage[];
@@ -100,42 +111,43 @@ export class MasonryGalleryComponent
         let addedImages: IMasonryGalleryImage[] = [];
         let removedImages: IMasonryGalleryImage[] = [];
 
-        if (changes) {
-            // change is available
-            const newImagesValue = changes.images.currentValue as IMasonryGalleryImage[];
-            const oldImagesValue = changes.images.previousValue as IMasonryGalleryImage[];
 
-            if (!oldImagesValue && !changes) {
-                // all images are added because there was no previous value
-                addedImages = newImagesValue;
-            } else {
-                // process added images
-                newImagesValue.forEach(newImage => {
-                    const existingImage = oldImagesValue.find(m => m.imageUrl.toLowerCase() === newImage.imageUrl.toLowerCase());
+        const newImagesValue = changes.images
+            .currentValue as IMasonryGalleryImage[];
+        const oldImagesValue = changes.images
+            .previousValue as IMasonryGalleryImage[];
 
-                    if (existingImage) {
-                        // image was in previous value && is in new, do nothing
-                    } else {
-                        // image is new
-                        addedImages.push(newImage);
-                    }
-                });
-
-                // process removed images
-                oldImagesValue.forEach(oldImage => {
-                    const existingImage = newImagesValue.find(m => m.imageUrl.toLowerCase() === oldImage.imageUrl.toLowerCase());
-
-                    if (existingImage) {
-                        // image was in previous value && is in new, do nothing
-                    } else {
-                        // image is removed
-                        removedImages.push(oldImage);
-                    }
-                });
-            }
+        if (!oldImagesValue) {
+            // all images are new ones
+            addedImages = changes.images.currentValue;
         } else {
-            // change is not available, all images are new images
-            addedImages = this.images;
+            // process added images
+            newImagesValue.forEach(newImage => {
+                const existingImage = oldImagesValue.find(
+                    m => m.imageUrl.toLowerCase() === newImage.imageUrl.toLowerCase()
+                );
+
+                if (existingImage) {
+                    // image was in previous value && is in new, do nothing
+                } else {
+                    // image is new
+                    addedImages.push(newImage);
+                }
+            });
+
+            // process removed images
+            oldImagesValue.forEach(oldImage => {
+                const existingImage = newImagesValue.find(
+                    m => m.imageUrl.toLowerCase() === oldImage.imageUrl.toLowerCase()
+                );
+
+                if (existingImage) {
+                    // image was in previous value && is in new, do nothing
+                } else {
+                    // image is removed
+                    removedImages.push(oldImage);
+                }
+            });
         }
 
         return {
@@ -164,24 +176,31 @@ export class MasonryGalleryComponent
             columnWidth: this.width,
             gutter: this.gutter
         });
+
+        const that = this;
+
+        this.msnry.on("layoutComplete", function (items) {
+            that.layoutComplete.next(items);
+        });
+
+        this.msnry.on("removeComplete", function (items) {
+            that.removeComplete.next(items);
+        });
     }
 
-    private removeImageFromGallery(
-        image: IMasonryGalleryImage,
-        grid: any
-    ): void {
-        if (!grid) {
-            throw Error(
-                'Grid element is not yet ready, are you trying to add image too soon?'
-            );
-        }
-
+    private removeImageFromGallery(image: IMasonryGalleryImage): void {
         // get image guid
-        const imageIdResult = this.idWithImages.find(m => m.image.imageUrl.toLowerCase() === image.imageUrl.toLowerCase());
+        const imageIdResult = this.idWithImages.find(
+            m => m.image.imageUrl.toLowerCase() === image.imageUrl.toLowerCase()
+        );
 
         if (!imageIdResult) {
             // image was not found, this is probably an error
-            console.warn(`Image with url '${image.imageUrl}' was not found. If you are adding images, make sure to 'replace' the images array with a new one so that detection change can be executed instead of just adding an image to array (which doesn't fire change detection on array property)`)
+            console.warn(
+                `Image with url '${
+                image.imageUrl
+                }' was not found. If you are adding images, make sure to 'replace' the images array with a new one so that detection change can be executed instead of just adding an image to array (which doesn't fire change detection on array property)`
+            );
             return;
         }
 
@@ -190,7 +209,11 @@ export class MasonryGalleryComponent
 
         if (!imageElem) {
             // image was not found in DOM
-            console.warn(`Image with id '{${imageIdResult.id}}' was not found in DOM. Have you manipulated the DOM in some way?`);
+            console.warn(
+                `Image with id '{${
+                imageIdResult.id
+                }}' was not found in DOM. Have you manipulated the DOM in some way?`
+            );
             return;
         }
 
@@ -198,86 +221,99 @@ export class MasonryGalleryComponent
         this.msnry.remove(imageElem);
 
         // refresh layout
-        this.msnry.reloadItems()
         this.msnry.layout();
 
         // remove image from array
-        this.idWithImages = this.idWithImages.filter(m => m.id !== imageIdResult.id);
+        for (let i = 0; i < this.idWithImages.length; i++) {
+            const idWithImage = this.idWithImages[i];
+            if (idWithImage.image.imageUrl.toLowerCase() === imageIdResult.image.imageUrl.toLowerCase()) {
+                this.idWithImages.splice(i, 1);
+            }
+        }
     }
 
-    private addImageToGallery(image: IMasonryGalleryImage, grid: any): void {
-        if (!grid) {
+    private addImagesToGallery(images: IMasonryGalleryImage[]): void {
+        if (!this.grid) {
             throw Error(
-                'Grid element is not yet ready, are you trying to add image too soon?'
+                "Grid element is not yet ready, are you trying to add image too soon?"
             );
         }
-        // generate unique image id
-        const imageId = this.getImageId();
 
-        // create element
-        const imageElem = this.renderer.createElement('img');
-        imageElem.setAttribute('id', imageId);
-        imageElem.setAttribute('alt', image.alt ? image.alt : 'no description');
-        imageElem.setAttribute('src', image.imageUrl);
-        // note - images are hidden by default and should be shown only after they are loaded
-        imageElem.setAttribute(
-            'style',
-            `display: none; max-width: ${this.width}px; margin-bottom: ${this.verticalGutter}px`
-        );
-        imageElem.className = this.getImageClass();
-        imageElem.addEventListener('load', () => {
-            this.handleImageLoad(imageId);
+        const imagesWrapper = this.renderer.createElement("span");
+
+        images.forEach(image => {
+            // generate unique image id
+            const imageId = this.getImageId();
+
+            // create element
+            const imageElem = this.renderer.createElement("img");
+            imageElem.setAttribute("id", imageId);
+            imageElem.setAttribute("alt", image.alt ? image.alt : "no description");
+            imageElem.setAttribute("src", image.imageUrl);
+            // note - images are hidden by default and should be shown only after they are loaded
+            imageElem.setAttribute(
+                "style",
+                `display: none; max-width: ${this.width}px; margin-bottom: ${
+                this.verticalGutter
+                }px`
+            );
+            imageElem.className = this.getImageClass();
+            imageElem.addEventListener("click", () => {
+                this.handleClick(image);
+            });
+
+            // store guid with this image
+            this.idWithImages.push({
+                id: imageId,
+                image: image
+            });
+
+            // add to dom and mansory & refresh layout
+            imagesWrapper.appendChild(imageElem);
         });
-        imageElem.addEventListener('click', () => {
-            this.handleClick(image);
+
+        // add html to dom
+        this.grid.appendChild(imagesWrapper);
+
+        // wait until all images in wrapped are loaded
+        imagesLoaded(imagesWrapper, imagesLoadedResult => {
+            if (imagesLoadedResult.images && imagesLoadedResult.images.length > 0) {
+                imagesLoadedResult.images.forEach(loadedImage => {
+                    // unhide image
+                    loadedImage.img.style.display = null;
+                });
+
+                if (imagesLoadedResult.images.length === 1) {
+                    // if layout is empty, use appended so that transition is nice
+                    this.msnry.appended(imagesLoadedResult.images[0].img);
+                } else {
+                    // using 'appended' will cause image to not transition correctly in Angular production build
+                    // when 'optimization' flag is enabled && when there are already some images loaded
+                    this.msnry.reloadItems();
+                    this.msnry.layout();
+                }
+            }
         });
-
-        // add to dom and mansory & refresh layout
-        this.grid.appendChild(imageElem);
-
-        // store guid with this image
-        this.idWithImages.push({
-            id: imageId,
-            image: image
-        })
     }
 
     private getImageClass(): string {
         let className = this.mansonryItemSelectorClass;
 
         if (this.imageClasses && this.imageClasses.length > 0) {
-            const customClass = this.imageClasses.join(' ');
+            const customClass = this.imageClasses.join(" ");
 
-            className += ' ' + customClass;
+            className += " " + customClass;
         }
 
         return className;
     }
 
     private getImageId(): string {
-        return this.galleryGuid + '_' + utilities.newGuid();
-    }
-
-    private handleImageLoad(imageId: string): void {
-        // find loaded image
-        const image = document.getElementById(imageId);
-
-        if (!image) {
-            return;
-        }
-
-        // unhide image
-        image.style.display = null;
-
-        // append image to masonry
-        this.msnry.reloadItems();
-        this.msnry.layout();
-       // this.msnry.appended(image);
-
+        return this.galleryGuid + "_" + utilities.newGuid();
     }
 }
 
 interface IdWithImage {
     id: string;
-    image: IMasonryGalleryImage
+    image: IMasonryGalleryImage;
 }

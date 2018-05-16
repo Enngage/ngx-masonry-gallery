@@ -25,6 +25,7 @@
     "@angular/core": "^6.0.0"
   },
   "dependencies": {
-    "masonry-layout": "4.2.1"
+    "masonry-layout": "4.2.1",
+    "imagesloaded": "4.1.4"
   }
 }

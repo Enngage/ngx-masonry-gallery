@@ -1,5 +1,5 @@
-import { Component, AfterViewInit, ChangeDetectorRef } from '@angular/core';
-import { IMasonryGalleryImage } from 'projects/ngx-masonry-gallery-lib/src/lib';
+import { Component, AfterViewInit, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { IMasonryGalleryImage, MasonryGalleryComponent } from 'projects/ngx-masonry-gallery-lib/src/lib';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 declare var hljs: any;
@@ -10,9 +10,9 @@ declare var hljs: any;
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements AfterViewInit {
-
   private readonly numberOfInitiallyShownImages = 8;
   private readonly numberOfImages: number = 23;
+  private readonly multipleImagesCount: number = 3;
   private readonly imagePath: string = 'assets/images-compressed/';
   private readonly imageExt: string = 'jpg';
 
@@ -57,32 +57,38 @@ export class AppComponent {
 }
 `;
 
-  public readonly usage: string = `<ngx-masonry-gallery [width]="250" [images]="images"></ngx-masonry-gallery>`;
+  public readonly usage: string = `<ngx-masonry-gallery [width]='250' [images]='images'></ngx-masonry-gallery>`;
 
   /**
    * This is here because the change event needs to be executed by the gallery to detect new/removed images
    */
-  public get activeImages(): IMasonryGalleryImage[] {
-    const images: IMasonryGalleryImage[] = [];
-    return this.images.map(m => <IMasonryGalleryImage>{
-      imageUrl: m.imageUrl
-    });
-  }
-
-  public images: IMasonryGalleryImage[] = [];
+  public initialImages?: IMasonryGalleryImage[];
+  public usedImages: IMasonryGalleryImage[] = [];
   public pool: IMasonryGalleryImage[] = [];
 
-  constructor(
-  ) {
-    for (let i = 1; i <= this.numberOfImages; i++) {
-      const image: IMasonryGalleryImage = { imageUrl: `${this.imagePath}${i}.${this.imageExt}` };
+  @ViewChild('masonryGallery') masonryGallery: MasonryGalleryComponent;
 
-      if (i > this.numberOfInitiallyShownImages) {
-        this.pool.push(image);
-      } else {
-        this.images.push(image);
-      }
+  constructor() {
+    // init pool
+    for (let i = 1; i <= this.numberOfImages; i++) {
+      const image: IMasonryGalleryImage = {
+        imageUrl: `${this.imagePath}${i}.${this.imageExt}`
+      };
+
+      this.pool.push(image);
     }
+
+    // init initial images
+    const images: IMasonryGalleryImage[] = [];
+    for (let i = 1; i <= this.numberOfInitiallyShownImages; i++) {
+      const image = this.pool[Math.floor(Math.random() * this.pool.length)];
+      // remove image from pool
+      this.removeFromPoolImages(image);
+      images.push(image);
+      this.usedImages.push(image);
+    }
+
+    this.initialImages = images;
   }
 
   ngAfterViewInit(): void {
@@ -98,20 +104,72 @@ export class AppComponent {
     const image = this.pool[Math.floor(Math.random() * this.pool.length)];
 
     if (image) {
-      this.images.push(image);
+      this.masonryGallery.addImages([image]);
+      this.usedImages.push(image);
 
       // remove image from pool
-      this.pool = this.pool.filter(m => m.imageUrl.toLowerCase() !== image.imageUrl.toLowerCase());
+      this.removeFromPoolImages(image);
     }
   }
 
   removeRandomImage(): void {
-    const image = this.images[Math.floor(Math.random() * this.images.length)];
+    const image = this.usedImages[Math.floor(Math.random() * this.usedImages.length)];
 
     if (image) {
-      this.images = this.images.filter(m => m.imageUrl.toLowerCase() !== image.imageUrl.toLowerCase());
+      this.usedImages = this.usedImages.filter(m => m.imageUrl.toLowerCase() !== image.imageUrl.toLowerCase());
       // add image back to pool
       this.pool.push(image);
+      // remove
+      this.masonryGallery.removeImages([image]);
+    }
+  }
+
+  addMultipleImages(): void {
+    const imagesToAdd = [];
+    for (let i = 0; i < this.multipleImagesCount; i++) {
+      const image = this.pool[Math.floor(Math.random() * this.pool.length)];
+
+      if (image) {
+        this.usedImages.push(image);
+        imagesToAdd.push(image);
+        // remove image from pool
+        this.removeFromPoolImages(image);
+      }
+    }
+
+    this.masonryGallery.addImages(imagesToAdd);
+  }
+
+  removeMultipleImages(): void {
+    const imagesToRemove = [];
+    for (let i = 0; i < this.multipleImagesCount; i++) {
+      const image = this.usedImages[Math.floor(Math.random() * this.usedImages.length)];
+
+      if (image) {
+        this.pool.push(image);
+        imagesToRemove.push(image);
+        this.removeFromUsedImages(image);
+      }
+    }
+
+    this.masonryGallery.removeImages(imagesToRemove);
+  }
+
+  private removeFromPoolImages(image: IMasonryGalleryImage): void {
+    for (let i = 0; i < this.pool.length; i++) {
+      const usedImage = this.pool[i];
+      if (usedImage.imageUrl.toLowerCase() === image.imageUrl.toLowerCase()) {
+        this.pool.splice(i, 1);
+      }
+    }
+  }
+
+  private removeFromUsedImages(image: IMasonryGalleryImage): void {
+    for (let i = 0; i < this.usedImages.length; i++) {
+      const usedImage = this.usedImages[i];
+      if (usedImage.imageUrl.toLowerCase() === image.imageUrl.toLowerCase()) {
+        this.usedImages.splice(i, 1);
+      }
     }
   }
 
@@ -119,4 +177,3 @@ export class AppComponent {
     hljs.initHighlightingOnLoad();
   }
 }
-
