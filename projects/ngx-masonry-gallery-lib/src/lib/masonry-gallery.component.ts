@@ -9,7 +9,7 @@ import {
     Renderer2,
     SimpleChanges
 } from "@angular/core";
-import * as imagesLoaded from "imagesloaded";
+import * as imagesloaded from "imagesloaded";
 import * as masonry from "masonry-layout";
 
 import { IMasonryGalleryImage } from "./masonry-gallery-models";
@@ -276,7 +276,7 @@ export class MasonryGalleryComponent
         this.grid.appendChild(imagesWrapper);
 
         // wait until all images in wrapped are loaded
-        imagesLoaded(imagesWrapper, imagesLoadedResult => {
+        imagesloaded(imagesWrapper, imagesLoadedResult => {
             if (imagesLoadedResult.images && imagesLoadedResult.images.length > 0) {
                 imagesLoadedResult.images.forEach(loadedImage => {
                     // unhide image
