@@ -17,7 +17,7 @@ import { utilities } from './utilities';
 
 @Component({
     selector: 'ngx-masonry-gallery',
-    template: '<div [id]="galleryGuid"></div><div style="display: none" [id]="galleryPreloadGuid"></div>'
+    template: '<div [id]="galleryGuid"></div>'
 })
 export class MasonryGalleryComponent
     implements AfterViewInit, OnDestroy, OnChanges {
@@ -32,7 +32,6 @@ export class MasonryGalleryComponent
     @Output() layoutComplete = new EventEmitter<any[]>();
 
     public readonly galleryGuid: string = utilities.newGuid();
-    public readonly galleryPreloadGuid: string = utilities.newGuid();
 
     private readonly mansonryItemSelectorClass = `grid-item-${this.galleryGuid}`;
     private readonly activeImages: ActiveImage[] = [];
@@ -241,7 +240,6 @@ export class MasonryGalleryComponent
             );
         }
 
-        const preloadElem = this.getPreloadElem();
         const imagesWrapper = this.renderer.createElement('span');
 
         images.forEach(image => {
@@ -276,21 +274,17 @@ export class MasonryGalleryComponent
         });
 
         // add html to dom
-        this.renderer.appendChild(preloadElem, imagesWrapper);
+        this.renderer.appendChild(this.grid, imagesWrapper);
 
         // add images once they are loaded
-        const imgLoad = imagesLoadedMethod(preloadElem);
+        const imgLoad = imagesLoadedMethod(imagesWrapper);
         imgLoad.on('progress', (instance, image) => {
             if (image.isLoaded) {
                 this.renderer.appendChild(this.grid, image.img);
+                this.msnry.appended(image.img);
                 this.msnry.reloadItems();
-                this.msnry.layout();
             }
         });
-    }
-
-    private getPreloadElem(): HTMLElement {
-        return document.getElementById(this.galleryPreloadGuid);
     }
 
     private getImageClass(): string {
