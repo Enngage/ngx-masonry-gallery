@@ -34,7 +34,6 @@
                   "with": "demo/environments/environment.prod.ts"
                 }
               ],
-              "baseHref": "https://enngage.github.io/ngx-masonry-gallery/",
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
