@@ -5,16 +5,12 @@
 !*/
 
 # Recursively allow files under subtree
-!/bundles/**
-!/esm5/**
-!/esm2015/**
-!/fesm5/**
-!/fesm2015/**
-!/lib/**
+!/src/**
 !package.json
 !.npmignore
 !*.md
 !*.ts
+!*.js
 !*.json
 
 
