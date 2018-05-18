@@ -254,7 +254,7 @@ export class MasonryGalleryComponent
             // note - images are hidden by default and should be shown only after they are loaded
             imageElem.setAttribute(
                 'style',
-                `width: ${this.width}px; margin-bottom: ${
+                `display: none; width: ${this.width}px; margin-bottom: ${
                 this.verticalGutter
                 }px`
             );
@@ -281,6 +281,8 @@ export class MasonryGalleryComponent
         imgLoad.on('progress', (instance, image) => {
             if (image.isLoaded) {
                 this.renderer.appendChild(this.grid, image.img);
+                // unhide image
+                this.renderer.setStyle(image.img, 'display', 'block');
                 this.msnry.appended(image.img);
                 this.msnry.reloadItems();
             }
