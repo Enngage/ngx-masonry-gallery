@@ -5,12 +5,11 @@
 !*/
 
 # Recursively allow files under subtree
-!/src/**
+!/dist/**
 !package.json
 !.npmignore
 !*.md
 !*.ts
-!*.js
 !*.json
 
 
