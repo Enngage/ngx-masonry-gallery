@@ -3,7 +3,7 @@
   "dest": "dist",
   "deleteDestPath": false,
   "lib": {
-    "entryFile": "src/public_api.ts"
+    "entryFile": "dist/public_api.ts"
   },
   "whitelistedNonPeerDependencies": [
     "masonry-layout", "imagesloaded"
