@@ -1,13 +1,13 @@
 {
   "name": "ngx-masonry-gallery",
-  "version": "2.0.00",
+  "version": "3.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/Enngage/ngx-masonry-gallery"
   },
   "license": "MIT",
   "author": "richard sustek",
-  "description": "Masonry gallery for Angular 6, 7 and beyond",
+  "description": "Masonry gallery for Angular",
   "keywords": [
     "Masonry",
     "Angular gallery",
@@ -23,8 +23,8 @@
     "preventPublish": "node prevent-publish"
   },
   "peerDependencies": {
-    "@angular/common": "^7.0.0",
-    "@angular/core": "^7.0.0"
+    "@angular/common": "^8.0.0",
+    "@angular/core": "^8.0.0"
   },
   "dependencies": {
     "masonry-layout": "4.2.2",

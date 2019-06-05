@@ -66,7 +66,7 @@ export class AppComponent {
   public usedImages: IMasonryGalleryImage[] = [];
   public pool: IMasonryGalleryImage[] = [];
 
-  @ViewChild('masonryGallery') masonryGallery: MasonryGalleryComponent;
+  @ViewChild('masonryGallery', { static: false }) masonryGallery: MasonryGalleryComponent;
 
   constructor() {
     // init pool
