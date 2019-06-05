@@ -6,7 +6,7 @@
     "build:demo": "ng build",
     "serve:demo": "ng serve",
     "build-demo-gh-pages": "ng build --prod",
-    "publish:lib": "cd ./projects/ngx-paypal-lib && npm run publish:lib"
+    "publish:lib": "cd ./projects/ngx-masonry-gallery-lib && npm run publish:lib"
   },
   "private": true,
   "dependencies": {
