@@ -1,10 +1,10 @@
-import { Component, AfterViewInit, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { IMasonryGalleryImage, MasonryGalleryComponent } from 'projects/ngx-masonry-gallery-lib/src/lib';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 declare var hljs: any;
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']

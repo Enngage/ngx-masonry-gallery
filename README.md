@@ -6,11 +6,6 @@
 
 For documentation & live demo visit [https://enngage.github.io/ngx-masonry-gallery/](https://enngage.github.io/ngx-masonry-gallery/)
 
-## Supported versions
-
-1. For Angular 6 use ngx-captcha on version `<= 1.x.y`
-2. For Angular 7 use ngx-captcha on version `>= 2.0.0`
-
 This gallery is based on the awesome [https://masonry.desandro.com/methods.html#remove](https://masonry.desandro.com/methods.html#remove) which is very well maintained and fully tested. This implementation handles images load event to ensure nice transition and also allows you to easily add/remove images as you can see from demo.
 
 I have limited time to maintain all my libraries so depending on how much traction this will gain, I will keep adding new features. To show support, please do start this repository.

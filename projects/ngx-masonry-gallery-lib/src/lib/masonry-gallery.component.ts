@@ -8,6 +8,7 @@ import {
     Output,
     Renderer2,
     SimpleChanges,
+    ChangeDetectionStrategy,
 } from '@angular/core';
 import imagesLoadedMethod from 'imagesloaded';
 import * as masonry from 'masonry-layout';
@@ -16,6 +17,7 @@ import { IMasonryGalleryImage } from './masonry-gallery-models';
 import { utilities } from './utilities';
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'ngx-masonry-gallery',
     template: '<div [id]="galleryGuid"></div>'
 })
