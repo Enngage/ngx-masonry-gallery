@@ -27,7 +27,7 @@
     "@angular/compiler-cli": "8.0.0",
     "@angular-devkit/build-ng-packagr": "0.800.1",
     "@angular-devkit/build-angular": "0.800.1",
-    "ng-packagr": "5.2.0",
+    "ng-packagr": "10.1.1",
     "tsickle": "0.35.0",
     "tslib": "1.9.3",
     "typescript": "3.4.5",
