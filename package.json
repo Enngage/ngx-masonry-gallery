@@ -9,7 +9,7 @@
         "publish:lib": "cd ./projects/ngx-masonry-gallery-lib && npm run publish:lib"
     },
     "files": [
-        "dist/**/*"
+        "dist-demo/**/*"
     ],
     "private": true,
     "dependencies": {
