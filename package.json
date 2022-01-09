@@ -8,6 +8,9 @@
         "build-demo-gh-pages": "ng build --prod",
         "publish:lib": "cd ./projects/ngx-masonry-gallery-lib && npm run publish:lib"
     },
+    "files": [
+        "dist/**/*"
+    ],
     "private": true,
     "dependencies": {
         "@angular/animations": "~11.2.0",
