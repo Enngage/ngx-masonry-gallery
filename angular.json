@@ -38,7 +38,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -156,7 +155,6 @@
       }
     }
   },
-  "defaultProject": "ngx-masonry-gallery",
   "cli": {
     "analytics": false
   }
