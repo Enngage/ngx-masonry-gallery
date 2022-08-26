@@ -1,4 +1,4 @@
-export class IMasonryGalleryImage {
-    public imageUrl: string;
-    public alt?: string;
+export interface IMasonryGalleryImage {
+  imageUrl: string;
+  alt?: string;
 }

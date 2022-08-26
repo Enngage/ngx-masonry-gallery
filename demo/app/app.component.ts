@@ -1,20 +1,28 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
-import { IMasonryGalleryImage, MasonryGalleryComponent } from 'projects/ngx-masonry-gallery-lib/src/lib';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ViewChild,
+} from "@angular/core";
+import {
+  IMasonryGalleryImage,
+  MasonryGalleryComponent,
+} from "projects/ngx-masonry-gallery-lib/src/lib";
 
 declare var hljs: any;
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.css"],
 })
 export class AppComponent implements AfterViewInit {
   private readonly numberOfInitiallyShownImages = 8;
   private readonly numberOfImages: number = 23;
   public readonly multipleImagesCount: number = 3;
-  private readonly imagePath: string = 'assets/images-compressed/';
-  private readonly imageExt: string = 'jpg';
+  private readonly imagePath: string = "assets/images-compressed/";
+  private readonly imageExt: string = "jpg";
 
   public readonly installation: string = `npm install ngx-masonry-gallery --save`;
 
@@ -66,13 +74,14 @@ export class AppComponent {
   public usedImages: IMasonryGalleryImage[] = [];
   public pool: IMasonryGalleryImage[] = [];
 
-  @ViewChild('masonryGallery', { static: false }) masonryGallery: MasonryGalleryComponent;
+  @ViewChild("masonryGallery", { static: false })
+  masonryGallery?: MasonryGalleryComponent;
 
   constructor() {
     // init pool
     for (let i = 1; i <= this.numberOfImages; i++) {
       const image: IMasonryGalleryImage = {
-        imageUrl: `${this.imagePath}${i}.${this.imageExt}`
+        imageUrl: `${this.imagePath}${i}.${this.imageExt}`,
       };
 
       this.pool.push(image);
@@ -96,8 +105,11 @@ export class AppComponent {
   }
 
   addRandomImage(): void {
+    if (!this.masonryGallery) {
+      return;
+    }
     if (this.pool.length === 0) {
-      alert('No more images!');
+      alert("No more images!");
       return;
     }
 
@@ -113,10 +125,16 @@ export class AppComponent {
   }
 
   removeRandomImage(): void {
-    const image = this.usedImages[Math.floor(Math.random() * this.usedImages.length)];
+    if (!this.masonryGallery) {
+      return;
+    }
+    const image =
+      this.usedImages[Math.floor(Math.random() * this.usedImages.length)];
 
     if (image) {
-      this.usedImages = this.usedImages.filter(m => m.imageUrl.toLowerCase() !== image.imageUrl.toLowerCase());
+      this.usedImages = this.usedImages.filter(
+        (m) => m.imageUrl.toLowerCase() !== image.imageUrl.toLowerCase()
+      );
       // add image back to pool
       this.pool.push(image);
       // remove
@@ -125,6 +143,9 @@ export class AppComponent {
   }
 
   addMultipleImages(): void {
+    if (!this.masonryGallery) {
+      return;
+    }
     const imagesToAdd = [];
     for (let i = 0; i < this.multipleImagesCount; i++) {
       const image = this.pool[Math.floor(Math.random() * this.pool.length)];
@@ -141,9 +162,14 @@ export class AppComponent {
   }
 
   removeMultipleImages(): void {
+    if (!this.masonryGallery) {
+      return;
+    }
+
     const imagesToRemove = [];
     for (let i = 0; i < this.multipleImagesCount; i++) {
-      const image = this.usedImages[Math.floor(Math.random() * this.usedImages.length)];
+      const image =
+        this.usedImages[Math.floor(Math.random() * this.usedImages.length)];
 
       if (image) {
         this.pool.push(image);

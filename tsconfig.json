@@ -8,7 +8,9 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es5",
+    "strict": true,
+    "alwaysStrict": true,
+    "target": "es2020",
     "typeRoots": [
       "node_modules/@types"
     ],

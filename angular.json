@@ -156,5 +156,8 @@
       }
     }
   },
-  "defaultProject": "ngx-masonry-gallery"
+  "defaultProject": "ngx-masonry-gallery",
+  "cli": {
+    "analytics": false
+  }
 }
