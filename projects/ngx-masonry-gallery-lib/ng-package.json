@@ -2,6 +2,10 @@
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "dist",
   "deleteDestPath": false,
+  "allowedNonPeerDependencies": [
+    "masonry-layout",
+    "imagesloaded"
+  ],
   "lib": {
     "entryFile": "src/public_api.ts"
   }
