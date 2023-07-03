@@ -10,7 +10,7 @@
     "experimentalDecorators": true,
     "strict": true,
     "alwaysStrict": true,
-    "target": "es2020",
+    "target": "ES2022",
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -22,6 +22,7 @@
       "ngx-masonry-gallery-lib": [
         "dist/ngx-masonry-gallery-lib"
       ]
-    }
+    },
+    "useDefineForClassFields": false
   }
 }

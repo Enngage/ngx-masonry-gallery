@@ -23,11 +23,11 @@
     "preventPublish": "node prevent-publish"
   },
   "peerDependencies": {
-    "@angular/common": "^13.0.0 || ^14.0.0",
-    "@angular/core": "^13.0.0 || ^14.0.0"
+    "@angular/common": "^13.0.0 || ^14.0.0 || ^15.0.0 || ^16.0.0",
+    "@angular/core": "^13.0.0 || ^14.0.0 || ^15.0.0 || ^16.0.0"
   },
   "dependencies": {
-    "masonry-layout": "4.2.2",
-    "imagesloaded": "5.0.0"
+    "imagesloaded": "5.0.0",
+    "masonry-layout": "^4.2.2"
   }
 }
